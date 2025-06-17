@@ -31,5 +31,14 @@ You will be prompted to enter a research query. The assistant will use AI and to
 - `tools.py`: Custom and third-party tools for search, Wikipedia, and saving output
 - `req.txt`: Python dependencies
 
+##Output (since anthropic is not free)
+
+AI_Agent> python -u "o:\WORK\B.tech\B.tech Coding\Aget\AI_Agent\main.py"
+What can i help to reasearch for you? Panda
+
+
+> Entering new AgentExecutor chain...
+Error Parsing REsponse Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}} -------Raw_repsonse-----  None  
+
 ## License
 MIT License
