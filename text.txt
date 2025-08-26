@@ -1,1 +1,2 @@
 pip install -r .\req.txt
+pip install duckduckgo-search
