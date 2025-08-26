@@ -17,9 +17,11 @@ class ResearchResponse(BaseModel):
     sources:list[str]
     tools_used:list[str]
 
-llm=ChatAnthropic(model="claude-3-5-sonnet-20241022")
-parser=PydanticOutputParser(pydantic_object=ResearchResponse)
-prompt=ChatPromptTemplate.from_messages(
+# Change to a lightweight ChatGPT model (gpt-3.5-turbo)
+llm = ChatOpenAI(model="gpt-3.5-turbo")
+
+parser = PydanticOutputParser(pydantic_object=ResearchResponse)
+prompt = ChatPromptTemplate.from_messages(
     [
         (
             'system',
@@ -28,14 +30,14 @@ prompt=ChatPromptTemplate.from_messages(
             Wrap the output in this format and provide no other 
             text\n{format_instructions}
             """,
-          ),
-         ("placeholder","{chat_histroy}"),
-         ("human","{query}"),
-         ("placeholder","{agent_scratchpad}")
+        ),
+        ("placeholder", "{chat_histroy}"),
+        ("human", "{query}"),
+        ("placeholder", "{agent_scratchpad}")
     ]).partial(format_instructions=parser.get_format_instructions())
 
-tools=[search_tool,wiki_tool,save_tool]
-agent=create_tool_calling_agent(
+tools = [search_tool, wiki_tool, save_tool]
+agent = create_tool_calling_agent(
     llm=llm,
     prompt=prompt,
     tools=tools
@@ -44,10 +46,13 @@ query=input("What can i help to reasearch for you? ")
 raw_response=None
 #print(raw_response)
 try:
-    agent_executor=AgentExecutor(agent=agent,tools=[],verbose=True)
+    agent_executor=AgentExecutor(agent=agent, tools=tools, verbose=True)
     raw_response=agent_executor.invoke({"query": query})
-    structured_response=parser.parse(raw_response.get('output'))[0]["text"]
-    print(structured_response)
+    structured_response = parser.parse(raw_response.get('output'))
+    print("Topic:", structured_response.topic)
+    print("Summary:", structured_response.summary)
+    print("Sources:", structured_response.sources)
+    print("Tools Used:", structured_response.tools_used)
 except Exception as e:
     print("Error Parsing REsponse",e,"-------Raw_repsonse----- ", raw_response)
 
